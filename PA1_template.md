@@ -1,16 +1,10 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-author: "Abhee Brahmnalkar"
-date: "July 17, 2015"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
-```{r}
+
+```r
 setwd("/Users/abheebrahmnalkar/Desktop/datasciencecoursera/RR")
 if(!file.exists("./RR-P1")){dir.create("./RR-P1")
          fileUrl <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
@@ -40,30 +34,55 @@ if(!exists("NEI")){
 library(plyr)
 steps_by_day <- ddply(activity, .(date), function(x) sum(x$steps))
 steps_by_day$V1 <- as.numeric(steps_by_day$V1)
-
 ```
 
 
 ## What is mean total number of steps taken per day?
-```{r}
-hist(steps_by_day$V1, xlab = "Total Steps Taken Per Day", ylab = "Frequency", main = "Histogram of Total Number of Steps Per Day")
 
+```r
+hist(steps_by_day$V1, xlab = "Total Steps Taken Per Day", ylab = "Frequency", main = "Histogram of Total Number of Steps Per Day")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
 sprintf("Average Steps: %s", mean(na.omit(steps_by_day$V1)))
+```
+
+```
+## [1] "Average Steps: 10766.1886792453"
+```
+
+```r
 sprintf("Average Steps: %s", median(na.omit(steps_by_day$V1)))
 ```
+
+```
+## [1] "Average Steps: 10765"
+```
 ## What is the average daily activity pattern?
-```{r}
+
+```r
 steps_by_interval <- ddply(activity, .(interval), function(x) mean(na.omit(x$steps)))
 plot(steps_by_interval$interval, steps_by_interval$V1, type = "l", xlab = "Interval", ylab = "Average Steps Taken")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
 
 ## Imputing missing values
-```{r}
+
+```r
 # Counting total missing values
 
 sprintf("Total number of missing values in the dataset: %s" , sum(is.na(activity$steps)))
+```
 
+```
+## [1] "Total number of missing values in the dataset: 2304"
+```
+
+```r
 # loop to replace missing values
 for (i in 1:length(activity$steps)) {
     if(is.na(activity$steps[i])) {
@@ -77,11 +96,28 @@ for (i in 1:length(activity$steps)) {
 steps_by_day <- ddply(activity, .(date), function(x) sum(x$steps))
 steps_by_day$V1 <- as.numeric(steps_by_day$V1)
 hist(steps_by_day$V1, xlab = "Total Steps Taken Per Day", ylab = "Frequency", main = "Histogram of Total Number of Steps Per Day (without NA's)")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+```r
 sprintf("Average Steps without NAs: %s", mean(na.omit(steps_by_day$V1)))
+```
+
+```
+## [1] "Average Steps without NAs: 10766.1886792453"
+```
+
+```r
 sprintf("Median Steps without NAs: %s", median(na.omit(steps_by_day$V1)))
 ```
+
+```
+## [1] "Median Steps without NAs: 10766.1886792453"
+```
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+
+```r
 # Adding day column to the activity dataset and forcing date column to date form using as.Date
 
 activity$date <- as.Date(activity$date)
@@ -107,3 +143,5 @@ par(mfrow = c(2,1))
 plot(weekday_steps_by_interval$interval, weekday_steps_by_interval$V1, type = "l", xlab = "Interval", ylab = "Average Steps Taken on Weekdays")
 plot(weekend_steps_by_interval$interval, weekend_steps_by_interval$V1, type = "l", xlab = "Interval", ylab = "Average Steps Taken on Weekends")
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
