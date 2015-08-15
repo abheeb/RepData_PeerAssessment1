@@ -1,4 +1,6 @@
 # Reproducible Research: Peer Assessment 1
+Abhee Brahmnalkar  
+July 17, 2015  
 
 
 ## Loading and preprocessing the data
@@ -40,12 +42,14 @@ steps_by_day$V1 <- as.numeric(steps_by_day$V1)
 ## What is mean total number of steps taken per day?
 
 ```r
-hist(steps_by_day$V1, xlab = "Total Steps Taken Per Day", ylab = "Frequency", main = "Histogram of Total Number of Steps Per Day")
+hist(steps_by_day$V1, xlab = "Total Steps Taken Per Day", ylab = "Frequency", main = "Histogram of Total Number of Steps Per Day", col = "light blue")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
 ```r
+old_steps_by_day <- steps_by_day
+
 sprintf("Average Steps: %s", mean(na.omit(steps_by_day$V1)))
 ```
 
@@ -54,11 +58,11 @@ sprintf("Average Steps: %s", mean(na.omit(steps_by_day$V1)))
 ```
 
 ```r
-sprintf("Average Steps: %s", median(na.omit(steps_by_day$V1)))
+sprintf("Median Steps: %s", median(na.omit(steps_by_day$V1)))
 ```
 
 ```
-## [1] "Average Steps: 10765"
+## [1] "Median Steps: 10765"
 ```
 ## What is the average daily activity pattern?
 
@@ -95,10 +99,20 @@ for (i in 1:length(activity$steps)) {
 
 steps_by_day <- ddply(activity, .(date), function(x) sum(x$steps))
 steps_by_day$V1 <- as.numeric(steps_by_day$V1)
-hist(steps_by_day$V1, xlab = "Total Steps Taken Per Day", ylab = "Frequency", main = "Histogram of Total Number of Steps Per Day (without NA's)")
+#par(mfrow = c(1, 2), mar = c(12, 4, 3, 2), mgp = c(3, 1, 0), cex = 0.8)
+hist(steps_by_day$V1, xlab = "Total Steps Taken Per Day", ylab = "Frequency", main = paste("Histogram of Total Number of Days (Without NAs)"), col = "light yellow")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+```r
+hist(steps_by_day$V1, xlab = "Total Steps Taken Per Day", ylab = "Frequency", main = paste("With non-imputed data tranposed"), col = "light yellow")
+hist(old_steps_by_day$V1, xlab = "Total Steps Taken Per Day", ylab = "Frequency", main = paste("With non-imputed data transposed"), col = "light blue", add = T)
+
+legend("topright", c("Without NA", "With NA"), col = c("light yellow", "light blue"), lwd = 10)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-2.png) 
 
 ```r
 sprintf("Average Steps without NAs: %s", mean(na.omit(steps_by_day$V1)))
@@ -139,9 +153,9 @@ activity_weekend <- activity[activity$daytype == "Weekend", ]
 weekday_steps_by_interval <- ddply(activity_weekday, .(interval), function(x) mean(na.omit(x$steps)))
 weekend_steps_by_interval <- ddply(activity_weekend, .(interval), function(x) mean(na.omit(x$steps)))
 
-par(mfrow = c(2,1))
-plot(weekday_steps_by_interval$interval, weekday_steps_by_interval$V1, type = "l", xlab = "Interval", ylab = "Average Steps Taken on Weekdays")
-plot(weekend_steps_by_interval$interval, weekend_steps_by_interval$V1, type = "l", xlab = "Interval", ylab = "Average Steps Taken on Weekends")
+par(mfrow = c(1, 2), mar = c(12, 4, 3, 2), mgp = c(3, 1, 0), cex = 0.8)
+plot(weekday_steps_by_interval$interval, weekday_steps_by_interval$V1, type = "l", xlab = "Interval", ylab = "Average Steps Taken", col = "light blue", main = "Weekdays")
+plot(weekend_steps_by_interval$interval, weekend_steps_by_interval$V1, type = "l", xlab = "Interval", ylab = "", col = "orange", main = "Weekends")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
